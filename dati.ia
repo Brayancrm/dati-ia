@@ -1,0 +1,5 @@
+git remote add origin https://github.com/Brayancrm/dati-ia.git
+git add .
+git commit -m "Primeiro deploy"
+git branch -M main
+git push -u origin main
