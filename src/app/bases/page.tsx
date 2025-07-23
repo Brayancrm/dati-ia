@@ -197,7 +197,7 @@ async function limparRegistrosOrfaos() {
   let lastDoc = null;
   let totalExcluidos = 0;
   while (true) {
-    const q = lastDoc
+    const q: any = lastDoc
       ? query(baseClientesRef, orderBy("baseId"), startAfter(lastDoc))
       : query(baseClientesRef, orderBy("baseId"));
     const snap = await getDocs(q);
