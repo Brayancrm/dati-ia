@@ -23,8 +23,54 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  /* Garantir que o viewport seja configurado corretamente para mobile */
+  min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height para mobile */
+  overflow-x: hidden; /* Prevenir scroll horizontal */
 }
 
 body[data-login='true'] {
   overflow: hidden;
+}
+
+/* Melhorias para responsividade mobile */
+@media (max-width: 768px) {
+  /* Ajustar padding e margens para mobile */
+  .mobile-container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Garantir que cards não sejam cortados */
+  .mobile-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    padding-bottom: 2rem; /* Espaço extra no final */
+  }
+  
+  /* Ajustar altura mínima para evitar corte */
+  .mobile-min-height {
+    min-height: calc(100vh - 200px);
+  }
+}
+
+/* Garantir que o conteúdo principal tenha altura adequada */
+main {
+  min-height: calc(100vh - 72px); /* Altura total menos o header */
+  min-height: calc(100dvh - 72px); /* Dynamic viewport height */
+}
+
+/* Melhorar scroll horizontal em dispositivos móveis */
+@media (max-width: 640px) {
+  .horizontal-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* Scroll suave no iOS */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+  
+  .horizontal-scroll::-webkit-scrollbar {
+    display: none; /* Chrome/Safari/Opera */
+  }
 }

@@ -204,7 +204,7 @@ async function limparRegistrosOrfaos() {
     if (snap.empty) break;
     const batch = writeBatch(db);
     snap.docs.forEach(docu => {
-      const data = docu.data();
+      const data: any = docu.data();
       if (data.baseId && !baseIdsValidos.has(data.baseId)) {
         batch.delete(docu.ref);
         totalExcluidos++;
@@ -467,14 +467,14 @@ export default function BasesPage() {
     if (files.length === 0) return;
     
     console.log(`📁 Arquivos selecionados: ${files.length}`);
-    files.forEach((file, index) => {
+    files.forEach((file: any, index) => {
       console.log(`  ${index + 1}. ${file.name} (${file.size} bytes)`);
     });
     
     // Analisar apenas o primeiro arquivo para sugerir tipos/colunas
     try {
       console.log(`🔍 Iniciando análise do primeiro arquivo: ${files[0].name}`);
-      const { json, tipos, colunas } = await analisarArquivo(files[0]);
+      const { json, tipos, colunas }: any = await analisarArquivo(files[0]);
       setDadosParaImportar({ json, tipos, colunas, fileName: files[0].name, originalFile: files[0] });
       setTotalReg(json.length);
       setShowPreview(true);

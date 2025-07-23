@@ -50,12 +50,16 @@ export default function RootLayout({
 
   return (
     <html lang="pt-BR">
+      <head>
+        {/* Meta tag para viewport responsivo */}
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white min-h-screen`}
         style={{ background: '#f8fafc' }}
       >
-        <header className="w-full h-[72px] flex items-center justify-between px-8 bg-green-900 shadow-lg fixed top-0 left-0 z-50 border-b-4 border-yellow-400">
-          <div className="text-2xl font-bold text-white tracking-tight drop-shadow flex items-center gap-2">
+        <header className="w-full h-[72px] flex items-center justify-between px-4 sm:px-8 bg-green-900 shadow-lg fixed top-0 left-0 z-50 border-b-4 border-yellow-400">
+          <div className="text-xl sm:text-2xl font-bold text-white tracking-tight drop-shadow flex items-center gap-2">
             DATI.IA
             <span className="ml-2 w-3 h-3 rounded-full bg-yellow-400 inline-block"></span>
           </div>
@@ -64,8 +68,8 @@ export default function RootLayout({
             onCreateAccountClick={handleCreateAccountClick}
           />
         </header>
-        <main className="w-full flex justify-center min-h-screen pt-[72px]">
-          <div>
+        <main className="w-full flex justify-center min-h-screen pt-[72px] mobile-container">
+          <div className="w-full max-w-none">
             {children}
           </div>
         </main>

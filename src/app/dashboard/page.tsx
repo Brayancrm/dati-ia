@@ -735,18 +735,18 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="w-full px-1 sm:px-2 md:px-4 bg-white py-2 mt-2">
+    <div className="w-full px-2 sm:px-4 bg-white py-2 mt-2 mobile-container">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-3 gap-2">
         <div className="flex flex-col gap-2">
-          <span className="text-lg font-bold text-green-900">
+          <span className="text-base sm:text-lg font-bold text-green-900">
             Créditos disponíveis: <span className="font-mono text-gray-900">
               {isMaster ? "Ilimitados" : (usuarioInfo ? usuarioInfo.creditos : '...')}
             </span>
           </span>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <button
-            className={`px-4 py-2 rounded-lg font-semibold transition ${!modoLote ? 'bg-green-900 text-yellow-400' : 'bg-gray-200 text-gray-900'}`}
+            className={`px-3 sm:px-4 py-2 rounded-lg font-semibold transition text-sm sm:text-base ${!modoLote ? 'bg-green-900 text-yellow-400' : 'bg-gray-200 text-gray-900'}`}
             onClick={() => {
               setModoLote(null);
               // Limpar resultados anteriores
@@ -760,7 +760,7 @@ export default function DashboardPage() {
             Busca Individual
           </button>
           <button
-            className={`px-4 py-2 rounded-lg font-semibold transition ${modoLote === 'arquivo' ? 'bg-green-900 text-yellow-400' : 'bg-gray-200 text-gray-900'}`}
+            className={`px-3 sm:px-4 py-2 rounded-lg font-semibold transition text-sm sm:text-base ${modoLote === 'arquivo' ? 'bg-green-900 text-yellow-400' : 'bg-gray-200 text-gray-900'}`}
             onClick={() => {
               setModoLote('arquivo');
               // Limpar resultados anteriores
@@ -774,7 +774,7 @@ export default function DashboardPage() {
             Upload de arquivo
           </button>
           <button
-            className={`px-4 py-2 rounded-lg font-semibold transition ${modoLote === 'manual' ? 'bg-green-900 text-yellow-400' : 'bg-gray-200 text-gray-900'}`}
+            className={`px-3 sm:px-4 py-2 rounded-lg font-semibold transition text-sm sm:text-base ${modoLote === 'manual' ? 'bg-green-900 text-yellow-400' : 'bg-gray-200 text-gray-900'}`}
             onClick={() => {
               setModoLote('manual');
               // Limpar resultados anteriores
@@ -789,24 +789,24 @@ export default function DashboardPage() {
           </button>
         </div>
       </div>
-      <section className="bg-white rounded-xl shadow-lg p-6 border-2 border-yellow-400/60">
+      <section className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border-2 border-yellow-400/60">
         {modoLote === 'arquivo' && (
           <div className="mb-4">
-            <label htmlFor="lote-upload" className="bg-green-900 text-yellow-400 px-4 py-2 rounded-lg hover:bg-yellow-400 hover:text-green-900 transition font-semibold cursor-pointer">Busca em lote (arquivo)</label>
+            <label htmlFor="lote-upload" className="bg-green-900 text-yellow-400 px-3 sm:px-4 py-2 rounded-lg hover:bg-yellow-400 hover:text-green-900 transition font-semibold cursor-pointer text-sm sm:text-base">Busca em lote (arquivo)</label>
             <input id="lote-upload" type="file" accept=".xlsx,.xls,.csv" onChange={handleLote} className="hidden" />
           </div>
         )}
         {modoLote === 'manual' && (
           <div className="mb-4 flex flex-col gap-2">
-            <label className="font-semibold text-gray-900">Cole os CPFs ou CNPJs (um por linha):</label>
+            <label className="font-semibold text-gray-900 text-sm sm:text-base">Cole os CPFs ou CNPJs (um por linha):</label>
             <textarea
-              className="border-2 border-gray-200 rounded-lg px-3 py-2 text-black min-h-[120px] max-h-60"
+              className="border-2 border-gray-200 rounded-lg px-3 py-2 text-black min-h-[120px] max-h-60 text-sm sm:text-base"
               placeholder="Digite ou cole aqui...\n123.456.789-00\n98765432100\n12.345.678/0001-99"
               value={cpfsColados}
               onChange={e => setCpfsColados(e.target.value)}
             />
             <button
-              className="bg-green-900 text-yellow-400 px-4 py-2 rounded-lg font-semibold hover:bg-yellow-400 hover:text-green-900 transition w-fit self-end"
+              className="bg-green-900 text-yellow-400 px-3 sm:px-4 py-2 rounded-lg font-semibold hover:bg-yellow-400 hover:text-green-900 transition w-fit self-end text-sm sm:text-base"
               type="button"
               onClick={() => {
                 const linhas = cpfsColados.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
@@ -826,37 +826,37 @@ export default function DashboardPage() {
         )}
         {/* Busca Individual - só aparece quando não estiver em modo lote */}
         {!modoLote && (
-          <div className="mb-8">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-3 bg-gradient-to-br from-green-700 to-green-800 rounded-xl shadow-lg">
-                <svg className="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+          <div className="mb-6 sm:mb-8">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4 sm:mb-6">
+              <div className="p-2 sm:p-3 bg-gradient-to-br from-green-700 to-green-800 rounded-xl shadow-lg">
+                <svg className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                   <circle cx="11" cy="11" r="8"/>
                   <line x1="21" y1="21" x2="16.65" y2="16.65"/>
                 </svg>
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900">Busca Individual</h3>
-                <p className="text-sm text-gray-600">Consulte dados completos por CPF ou CNPJ</p>
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900">Busca Individual</h3>
+                <p className="text-xs sm:text-sm text-gray-600">Consulte dados completos por CPF ou CNPJ</p>
               </div>
             </div>
             
-            <form className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 border border-green-200 shadow-sm" onSubmit={handleBusca}>
-              <div className="flex flex-col lg:flex-row gap-4 items-end">
+            <form className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-4 sm:p-6 border border-green-200 shadow-sm" onSubmit={handleBusca}>
+              <div className="flex flex-col lg:flex-row gap-3 sm:gap-4 items-end">
                 {/* Input de busca */}
                 <div className="flex-1">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
                     Documento para consulta
                   </label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                    <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
+                      <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                       </svg>
                     </div>
                     <input 
                       type="text" 
                       placeholder="Digite o CPF ou CNPJ para consulta" 
-                      className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-green-600 focus:ring-2 focus:ring-green-200 transition-all duration-200 text-gray-900 placeholder:text-gray-500 bg-white shadow-sm" 
+                      className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-2 sm:py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-green-600 focus:ring-2 focus:ring-green-200 transition-all duration-200 text-gray-900 placeholder:text-gray-500 bg-white shadow-sm text-sm sm:text-base" 
                       value={cpfBusca} 
                       onChange={e => handleInputBusca(e.target.value)} 
                     />
@@ -865,20 +865,20 @@ export default function DashboardPage() {
                 
                 {/* Select tipo de busca */}
                 <div className="w-full lg:w-64">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
                     Tipo de consulta
                   </label>
                   <div className="relative">
                     <select 
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-green-600 focus:ring-2 focus:ring-green-200 transition-all duration-200 text-gray-900 bg-white shadow-sm appearance-none cursor-pointer" 
+                      className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-green-600 focus:ring-2 focus:ring-green-200 transition-all duration-200 text-gray-900 bg-white shadow-sm appearance-none cursor-pointer text-sm sm:text-base" 
                       value={tipoBusca} 
                       onChange={e => setTipoBusca(e.target.value)}
                     >
                       <option value="CPF">👤 Pessoa Física (CPF)</option>
                       <option value="CNPJ">🏢 Pessoa Jurídica (CNPJ)</option>
               </select>
-                    <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                      <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                    <div className="absolute inset-y-0 right-0 pr-3 sm:pr-4 flex items-center pointer-events-none">
+                      <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
                       </svg>
                     </div>
@@ -889,18 +889,18 @@ export default function DashboardPage() {
                 <div className="w-full lg:w-auto">
                   <button 
                     type="submit" 
-                    className="w-full lg:w-auto px-8 py-3 bg-gradient-to-r from-green-700 to-green-800 text-yellow-400 rounded-xl hover:from-green-800 hover:to-green-900 focus:outline-none focus:ring-4 focus:ring-green-200 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none" 
+                    className="w-full lg:w-auto px-6 sm:px-8 py-2 sm:py-3 bg-gradient-to-r from-green-700 to-green-800 text-yellow-400 rounded-xl hover:from-green-800 hover:to-green-900 focus:outline-none focus:ring-4 focus:ring-green-200 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none text-sm sm:text-base" 
                     title="Realizar busca" 
                     disabled={buscando}
                   >
                     {buscando ? (
                       <>
-                        <div className="w-5 h-5 border-2 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
+                        <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
                         <span>Buscando...</span>
                       </>
                     ) : (
                       <>
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                           <circle cx="11" cy="11" r="8"/>
                           <line x1="21" y1="21" x2="16.65" y2="16.65"/>
                         </svg>
@@ -912,8 +912,8 @@ export default function DashboardPage() {
               </div>
               
               {/* Dica de uso */}
-              <div className="mt-4 flex items-center gap-2 text-sm text-gray-600">
-                <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <div className="mt-3 sm:mt-4 flex items-center gap-2 text-xs sm:text-sm text-gray-600">
+                <svg className="w-3 h-3 sm:w-4 sm:h-4 text-green-600" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                   <circle cx="12" cy="12" r="10"/>
                   <path d="M12 6v6l4 2"/>
                 </svg>
@@ -978,57 +978,57 @@ export default function DashboardPage() {
           <div className="mt-8 w-full max-w-none">
             <div className="bg-white border border-gray-200 rounded-2xl shadow-xl overflow-hidden">
             {/* Cabeçalho principal */}
-              <div className="bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50 border-b border-gray-200 p-8">
-                <div className="flex flex-col xl:flex-row xl:items-start xl:justify-between gap-6">
+              <div className="bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50 border-b border-gray-200 p-4 sm:p-8">
+                <div className="flex flex-col xl:flex-row xl:items-start xl:justify-between gap-4 sm:gap-6">
               <div className="flex-1">
-                    <div className="flex items-center gap-4 mb-6">
-                      <div className="p-3 bg-gradient-to-br from-green-800 to-green-900 rounded-xl shadow-lg">
-                        <svg className="w-7 h-7 text-yellow-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                      <div className="p-2 sm:p-3 bg-gradient-to-br from-green-800 to-green-900 rounded-xl shadow-lg">
+                        <svg className="w-5 h-5 sm:w-7 sm:h-7 text-yellow-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                         </svg>
                 </div>
                       <div>
-                        <h2 className="text-3xl font-bold text-gray-900 mb-1">{obterNomeCliente(resultado)}</h2>
-                        <p className="text-lg text-gray-600">Dados pessoais encontrados</p>
+                        <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-1">{obterNomeCliente(resultado)}</h2>
+                        <p className="text-sm sm:text-lg text-gray-600">Dados pessoais encontrados</p>
                 </div>
                 </div>
                     
                     {/* Grid expandido das informações básicas */}
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 sm:gap-6">
                       {obterCPF(resultado) && (
-                        <div className="bg-white rounded-xl p-4 shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
-                          <div className="text-xs font-bold text-green-600 mb-2 uppercase tracking-wide">CPF</div>
-                          <div className="text-2xl font-bold text-gray-900">{obterCPF(resultado)}</div>
+                        <div className="bg-white rounded-xl p-3 sm:p-4 shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
+                          <div className="text-xs font-bold text-green-600 mb-1 sm:mb-2 uppercase tracking-wide">CPF</div>
+                          <div className="text-lg sm:text-2xl font-bold text-gray-900 break-words">{obterCPF(resultado)}</div>
               </div>
                       )}
                       {obterRG(resultado) && (
-                        <div className="bg-white rounded-xl p-4 shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
-                          <div className="text-xs font-bold text-green-600 mb-2 uppercase tracking-wide">RG</div>
-                          <div className="text-2xl font-bold text-gray-900">{obterRG(resultado)}</div>
+                        <div className="bg-white rounded-xl p-3 sm:p-4 shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
+                          <div className="text-xs font-bold text-green-600 mb-1 sm:mb-2 uppercase tracking-wide">RG</div>
+                          <div className="text-lg sm:text-2xl font-bold text-gray-900 break-words">{obterRG(resultado)}</div>
                         </div>
                       )}
                       {(resultado.SEXO || resultado.sexo || resultado.GENERO || resultado.genero) && (
-                        <div className="bg-white rounded-xl p-4 shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
-                          <div className="text-xs font-bold text-green-600 mb-2 uppercase tracking-wide">Gênero</div>
-                          <div className="text-2xl font-bold text-gray-900">{resultado.SEXO || resultado.sexo || resultado.GENERO || resultado.genero}</div>
+                        <div className="bg-white rounded-xl p-3 sm:p-4 shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
+                          <div className="text-xs font-bold text-green-600 mb-1 sm:mb-2 uppercase tracking-wide">Gênero</div>
+                          <div className="text-lg sm:text-2xl font-bold text-gray-900">{resultado.SEXO || resultado.sexo || resultado.GENERO || resultado.genero}</div>
                         </div>
                       )}
                       {(resultado.DATA_NASCIMENTO || resultado.data_nascimento || resultado.NASCIMENTO || resultado.nascimento) && (
-                        <div className="bg-white rounded-xl p-4 shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
-                          <div className="text-xs font-bold text-green-600 mb-2 uppercase tracking-wide">Nascimento</div>
-                          <div className="text-2xl font-bold text-gray-900">{resultado.DATA_NASCIMENTO || resultado.data_nascimento || resultado.NASCIMENTO || resultado.nascimento}</div>
+                        <div className="bg-white rounded-xl p-3 sm:p-4 shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
+                          <div className="text-xs font-bold text-green-600 mb-1 sm:mb-2 uppercase tracking-wide">Nascimento</div>
+                          <div className="text-lg sm:text-2xl font-bold text-gray-900">{resultado.DATA_NASCIMENTO || resultado.data_nascimento || resultado.NASCIMENTO || resultado.nascimento}</div>
                         </div>
                       )}
                       {(resultado.IDADE || resultado.idade) && (
-                        <div className="bg-white rounded-xl p-4 shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
-                          <div className="text-xs font-bold text-green-600 mb-2 uppercase tracking-wide">Idade</div>
-                          <div className="text-2xl font-bold text-gray-900">{resultado.IDADE || resultado.idade} anos</div>
+                        <div className="bg-white rounded-xl p-3 sm:p-4 shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
+                          <div className="text-xs font-bold text-green-600 mb-1 sm:mb-2 uppercase tracking-wide">Idade</div>
+                          <div className="text-lg sm:text-2xl font-bold text-gray-900">{resultado.IDADE || resultado.idade} anos</div>
                         </div>
                       )}
                       {(resultado.SIGNO || resultado.signo) && (
-                        <div className="bg-white rounded-xl p-4 shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
-                          <div className="text-xs font-bold text-green-600 mb-2 uppercase tracking-wide">Signo</div>
-                          <div className="text-2xl font-bold text-gray-900">{resultado.SIGNO || resultado.signo}</div>
+                        <div className="bg-white rounded-xl p-3 sm:p-4 shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
+                          <div className="text-xs font-bold text-green-600 mb-1 sm:mb-2 uppercase tracking-wide">Signo</div>
+                          <div className="text-lg sm:text-2xl font-bold text-gray-900">{resultado.SIGNO || resultado.signo}</div>
                         </div>
                       )}
                     </div>
@@ -1036,27 +1036,27 @@ export default function DashboardPage() {
                     {/* Informações de filiação expandidas */}
                     {((resultado.NOME_MAE || resultado.nome_mae || resultado.MAE || resultado.mae) || 
                       (resultado.NOME_PAI || resultado.nome_pai || resultado.PAI || resultado.pai)) && (
-                      <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      <div className="mt-4 sm:mt-6 grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-6">
                         {(resultado.NOME_MAE || resultado.nome_mae || resultado.MAE || resultado.mae) && (
-                          <div className="bg-white rounded-xl p-5 shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
-                            <div className="text-sm font-bold text-green-600 mb-3 uppercase tracking-wide flex items-center gap-2">
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                          <div className="bg-white rounded-xl p-3 sm:p-5 shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
+                            <div className="text-xs sm:text-sm font-bold text-green-600 mb-2 sm:mb-3 uppercase tracking-wide flex items-center gap-2">
+                              <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                               </svg>
                               Nome da Mãe
                             </div>
-                            <div className="text-2xl font-bold text-gray-900">{resultado.NOME_MAE || resultado.nome_mae || resultado.MAE || resultado.mae}</div>
+                            <div className="text-lg sm:text-2xl font-bold text-gray-900 break-words">{resultado.NOME_MAE || resultado.nome_mae || resultado.MAE || resultado.mae}</div>
                           </div>
                         )}
                         {(resultado.NOME_PAI || resultado.nome_pai || resultado.PAI || resultado.pai) && (
-                          <div className="bg-white rounded-xl p-5 shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
-                            <div className="text-sm font-bold text-green-600 mb-3 uppercase tracking-wide flex items-center gap-2">
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                          <div className="bg-white rounded-xl p-3 sm:p-5 shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
+                            <div className="text-xs sm:text-sm font-bold text-green-600 mb-2 sm:mb-3 uppercase tracking-wide flex items-center gap-2">
+                              <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                               </svg>
                               Nome do Pai
                             </div>
-                            <div className="text-2xl font-bold text-gray-900">{resultado.NOME_PAI || resultado.nome_pai || resultado.PAI || resultado.pai}</div>
+                            <div className="text-lg sm:text-2xl font-bold text-gray-900 break-words">{resultado.NOME_PAI || resultado.nome_pai || resultado.PAI || resultado.pai}</div>
                           </div>
                         )}
                       </div>
@@ -1064,16 +1064,16 @@ export default function DashboardPage() {
                   </div>
                   
                   {/* Status e badges */}
-                  <div className="flex flex-row xl:flex-col gap-4 xl:items-end">
-                    <div className="inline-flex items-center px-6 py-3 rounded-full bg-gradient-to-r from-green-800 to-green-900 text-yellow-400 font-bold text-lg shadow-lg">
-                      <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <div className="flex flex-col sm:flex-row xl:flex-col gap-3 sm:gap-4 xl:items-end mt-4 sm:mt-0">
+                    <div className="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-gradient-to-r from-green-800 to-green-900 text-yellow-400 font-bold text-sm sm:text-lg shadow-lg">
+                      <svg className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4"/>
                       </svg>
                   {resultado.STATUS || 'ATIVO'}
                     </div>
                 {resultado.PERSONA && (
-                      <div className="inline-flex items-center px-6 py-3 rounded-full bg-gradient-to-r from-yellow-500 to-yellow-600 text-green-900 font-bold text-lg shadow-lg">
-                        <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                      <div className="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-gradient-to-r from-yellow-500 to-yellow-600 text-green-900 font-bold text-sm sm:text-lg shadow-lg">
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                           <circle cx="12" cy="12" r="10"/>
                           <circle cx="12" cy="10" r="3"/>
                           <path d="M12 13v2"/>
@@ -1086,12 +1086,12 @@ export default function DashboardPage() {
               </div>
               
               {/* Dados setorizados expandidos */}
-              <div className="p-8">
-                <div className="grid grid-cols-6 gap-4 min-w-0">
+              <div className="p-4 sm:p-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 min-w-0 mobile-card-grid">
                             {setorizarDados(resultado).map(setor => {
                 const isAberto = setoresAbertos[setor.nome];
                 return (
-                  <div key={setor.nome} className="bg-white rounded-xl shadow-md border border-gray-200 min-w-0 overflow-hidden">
+                  <div key={setor.nome} className="bg-white rounded-xl shadow-md border border-gray-200 min-w-0 overflow-hidden mobile-min-height">
                     {/* Cabeçalho clicável */}
                     <div 
                       className="cursor-pointer hover:bg-gray-50 transition-colors"
@@ -1099,19 +1099,19 @@ export default function DashboardPage() {
                     >
                       {!isAberto ? (
                         /* Estado fechado - Ícone grande centralizado */
-                        <div className="flex flex-col items-center justify-center p-8 min-h-[200px]">
-                          <div className="flex items-center justify-center w-16 h-16 mb-4">
+                        <div className="flex flex-col items-center justify-center p-4 sm:p-8 min-h-[180px] sm:min-h-[200px]">
+                          <div className="flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 mb-4">
                             {React.cloneElement(setor.icone, { 
-                              className: "w-16 h-16 text-gray-600" 
+                              className: "w-12 h-12 sm:w-16 sm:h-16 text-gray-600" 
                             })}
                           </div>
-                          <span className="font-bold text-xl text-gray-800 text-center mb-3 tracking-wide">{setor.nome}</span>
+                          <span className="font-bold text-lg sm:text-xl text-gray-800 text-center mb-3 tracking-wide px-2">{setor.nome}</span>
                           {setor.dados.length > 0 && (
                             <div className="flex items-center gap-2">
-                              <span className="text-sm bg-green-100 text-green-800 px-4 py-2 rounded-full font-semibold shadow-sm">
+                              <span className="text-xs sm:text-sm bg-green-100 text-green-800 px-3 sm:px-4 py-1 sm:py-2 rounded-full font-semibold shadow-sm">
                                 {setor.dados.length} {setor.dados.length === 1 ? 'dado' : 'dados'}
                               </span>
-                              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                              <svg className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
                               </svg>
                             </div>
@@ -1119,11 +1119,13 @@ export default function DashboardPage() {
                         </div>
                       ) : (
                         /* Estado aberto - Cabeçalho compacto */
-                        <div className="p-4">
+                        <div className="p-3 sm:p-4">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                              {setor.icone}
-                              <span className="font-bold text-sm text-gray-800 truncate">{setor.nome}</span>
+                              {React.cloneElement(setor.icone, { 
+                                className: "w-4 h-4 sm:w-6 sm:h-6" 
+                              })}
+                              <span className="font-bold text-xs sm:text-sm text-gray-800 truncate">{setor.nome}</span>
                             </div>
                             <div className="flex items-center gap-2">
                               {setor.dados.length > 0 && (
@@ -1132,7 +1134,7 @@ export default function DashboardPage() {
                                 </span>
                               )}
                               <svg 
-                                className="w-5 h-5 text-gray-500 transition-transform duration-300 rotate-180" 
+                                className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 transition-transform duration-300 rotate-180" 
                                 fill="none" 
                                 stroke="currentColor" 
                                 strokeWidth={2} 
@@ -1150,14 +1152,14 @@ export default function DashboardPage() {
                     <div className={`transition-all duration-300 ease-in-out ${
                       isAberto ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
                     } overflow-hidden`}>
-                      <div className="px-4 pb-4 border-t border-gray-100">
+                      <div className="px-3 sm:px-4 pb-4 border-t border-gray-100">
                         {setor.dados.length > 0 ? (
-                          <div className="space-y-3 pt-3">
+                          <div className="space-y-2 sm:space-y-3 pt-3">
                             {setor.dados.map(d => (
-                              <div key={d.label} className="flex flex-col bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition-colors">
-                                <span className="text-xs font-semibold uppercase tracking-wider text-green-700 mb-2">{d.label}</span>
+                              <div key={d.label} className="flex flex-col bg-gray-50 rounded-lg p-2 sm:p-3 hover:bg-gray-100 transition-colors">
+                                <span className="text-xs font-semibold uppercase tracking-wider text-green-700 mb-1 sm:mb-2">{d.label}</span>
                                 <div className="flex items-center justify-between gap-2">
-                                  <span className="text-lg font-semibold text-gray-800 flex-1 break-words leading-relaxed">
+                                  <span className="text-sm sm:text-lg font-semibold text-gray-800 flex-1 break-words leading-relaxed">
                                     {typeof d.valor === 'object' ? JSON.stringify(d.valor) : String(d.valor)}
                                   </span>
                                   <CopiarValor valor={typeof d.valor === 'object' ? JSON.stringify(d.valor) : String(d.valor)} />
@@ -1167,11 +1169,11 @@ export default function DashboardPage() {
                           </div>
                         ) : (
                           <div className="text-gray-400 flex flex-col items-center py-4">
-                            <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                            <svg className="w-5 h-5 sm:w-6 sm:h-6 mb-1" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                               <rect x="3" y="3" width="18" height="18" rx="2" />
                               <path d="M9 9h6v6H9z" />
                             </svg>
-                            <span className="text-[10px]">Nenhum dado encontrado</span>
+                            <span className="text-[10px] sm:text-xs">Nenhum dado encontrado</span>
                           </div>
                         )}
                       </div>
