@@ -87,6 +87,9 @@ export default function HomePage() {
         dataAprovacao: null
       });
 
+      // Notificar o master sobre a nova solicitação de conta
+      notificarMasterSobreNovaConta(formData);
+
       // Simular envio de emails (em produção, usar serviço real de email)
       console.log(`📧 Email enviado para ${formData.email}: Sua solicitação de conta foi recebida e está sendo analisada.`);
       console.log(`📧 Email enviado para admin: Nova solicitação de conta de ${formData.nome} (${formData.email})`);
@@ -98,6 +101,56 @@ export default function HomePage() {
       setError("Erro ao criar solicitação: " + err.message);
     } finally {
       setCreating(false);
+    }
+  };
+
+  // Função para notificar o master sobre nova solicitação de conta
+  const notificarMasterSobreNovaConta = (dadosConta: any) => {
+    // Criar dados da notificação
+    const notificacao = {
+      tipo: "NOVA_SOLICITACAO_CONTA",
+      nome: dadosConta.nome,
+      email: dadosConta.email,
+      documento: dadosConta.documento,
+      tipoDocumento: dadosConta.documento.length === 11 ? 'CPF' : 'CNPJ',
+      data: new Date().toISOString(),
+      status: "PENDENTE"
+    };
+
+    // Salvar no localStorage para histórico (mesmo sistema das notificações de pagamento)
+    try {
+      const notificacoesExistentes = localStorage.getItem('notificacoes_pagamentos') || '[]';
+      const notificacoes = JSON.parse(notificacoesExistentes);
+      
+      // Adicionar nova notificação
+      notificacoes.push(notificacao);
+      
+      // Salvar de volta no localStorage
+      localStorage.setItem('notificacoes_pagamentos', JSON.stringify(notificacoes));
+      
+      console.log("🔔 NOTIFICAÇÃO PARA MASTER - Nova solicitação de conta:", notificacao);
+      
+      // Simular envio de email para o master
+      const emailData = {
+        to: "Brayan@agilivertex.com.br",
+        subject: "👤 Nova Solicitação de Conta - Dati IA",
+        body: `
+          <h2>👤 Nova Solicitação de Conta!</h2>
+          <p><strong>Nome:</strong> ${dadosConta.nome}</p>
+          <p><strong>Email:</strong> ${dadosConta.email}</p>
+          <p><strong>Documento:</strong> ${dadosConta.documento} (${dadosConta.documento.length === 11 ? 'CPF' : 'CNPJ'})</p>
+          <p><strong>Data:</strong> ${new Date().toLocaleString('pt-BR')}</p>
+          <p><strong>Status:</strong> PENDENTE</p>
+          <hr>
+          <p><em>Esta é uma notificação automática do sistema Dati IA.</em></p>
+          <p><strong>Ação necessária:</strong> Aprovar ou rejeitar a solicitação na página de usuários.</p>
+        `
+      };
+      
+      console.log("📧 Email enviado para usuário master:", emailData);
+      
+    } catch (error) {
+      console.error("Erro ao salvar notificação:", error);
     }
   };
 

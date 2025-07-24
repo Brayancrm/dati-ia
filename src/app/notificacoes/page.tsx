@@ -7,13 +7,18 @@ import { collection, getDocs, query, where, updateDoc, doc } from "firebase/fire
 
 interface Notificacao {
   tipo: string;
-  plano: string;
-  valor: number;
-  consultas: number;
+  plano?: string;
+  valor?: number;
+  consultas?: number;
   data: string;
-  usuario: string;
+  usuario?: string;
   status: string;
   id?: string;
+  // Campos para solicitação de conta
+  nome?: string;
+  email?: string;
+  documento?: string;
+  tipoDocumento?: string;
 }
 
 export default function NotificacoesPage() {
@@ -61,58 +66,80 @@ export default function NotificacoesPage() {
     setLiberando(notificacao.id || index.toString());
     
     try {
-      // Buscar usuário no Firestore
-      const usuariosRef = collection(db, "usuarios");
-      const q = query(usuariosRef, where("email", "==", notificacao.usuario));
-      const querySnapshot = await getDocs(q);
-      
-      if (querySnapshot.empty) {
-        alert("❌ Usuário não encontrado no sistema!");
-        setLiberando(null);
-        return;
-      }
+      // Verificar se é notificação de pagamento ou solicitação de conta
+      if (notificacao.tipo === "PAGAMENTO_CONFIRMADO") {
+        // Buscar usuário no Firestore
+        const usuariosRef = collection(db, "usuarios");
+        const q = query(usuariosRef, where("email", "==", notificacao.usuario));
+        const querySnapshot = await getDocs(q);
+        
+        if (querySnapshot.empty) {
+          alert("❌ Usuário não encontrado no sistema!");
+          setLiberando(null);
+          return;
+        }
 
-      const usuarioDoc = querySnapshot.docs[0];
-      const usuarioData = usuarioDoc.data();
-      const creditosAnteriores = usuarioData.creditos || 0;
-      const novosCreditos = creditosAnteriores + notificacao.consultas;
+        const usuarioDoc = querySnapshot.docs[0];
+        const usuarioData = usuarioDoc.data();
+        const creditosAnteriores = usuarioData.creditos || 0;
+        const novosCreditos = creditosAnteriores + (notificacao.consultas || 0);
 
-      // Atualizar créditos do usuário
-      await updateDoc(doc(db, "usuarios", usuarioDoc.id), {
-        creditos: novosCreditos
-      });
+        // Atualizar créditos do usuário
+        await updateDoc(doc(db, "usuarios", usuarioDoc.id), {
+          creditos: novosCreditos
+        });
 
-      // Atualizar status da notificação
-      const notificacoesAtualizadas = [...notificacoes];
-      notificacoesAtualizadas[index] = {
-        ...notificacao,
-        status: "LIBERADO"
-      };
-      setNotificacoes(notificacoesAtualizadas);
+        // Atualizar status da notificação
+        const notificacoesAtualizadas = [...notificacoes];
+        notificacoesAtualizadas[index] = {
+          ...notificacao,
+          status: "LIBERADO"
+        };
+        setNotificacoes(notificacoesAtualizadas);
 
-      // Salvar no localStorage
-      localStorage.setItem('notificacoes_pagamentos', JSON.stringify(notificacoesAtualizadas.reverse()));
+        // Salvar no localStorage
+        localStorage.setItem('notificacoes_pagamentos', JSON.stringify(notificacoesAtualizadas.reverse()));
 
-      // Mostrar confirmação
-      alert(`✅ Créditos liberados com sucesso!
+        // Mostrar confirmação
+        alert(`✅ Créditos liberados com sucesso!
 
 Plano: ${notificacao.plano}
-Consultas: ${notificacao.consultas.toLocaleString()}
+Consultas: ${(notificacao.consultas || 0).toLocaleString()}
 Usuário: ${notificacao.usuario}
 
 Créditos anteriores: ${creditosAnteriores.toLocaleString()}
 Novos créditos: ${novosCreditos.toLocaleString()}`);
 
-      console.log("🎉 Créditos liberados:", {
-        usuario: notificacao.usuario,
-        creditosAnteriores,
-        novosCreditos,
-        plano: notificacao.plano
-      });
+        console.log("🎉 Créditos liberados:", {
+          usuario: notificacao.usuario,
+          creditosAnteriores,
+          novosCreditos,
+          plano: notificacao.plano
+        });
+      } else if (notificacao.tipo === "NOVA_SOLICITACAO_CONTA") {
+        // Para solicitações de conta, apenas marcar como visualizada
+        const notificacoesAtualizadas = [...notificacoes];
+        notificacoesAtualizadas[index] = {
+          ...notificacao,
+          status: "VISUALIZADA"
+        };
+        setNotificacoes(notificacoesAtualizadas);
+
+        // Salvar no localStorage
+        localStorage.setItem('notificacoes_pagamentos', JSON.stringify(notificacoesAtualizadas.reverse()));
+
+        alert(`✅ Solicitação de conta marcada como visualizada!
+
+Nome: ${notificacao.nome}
+Email: ${notificacao.email}
+Documento: ${notificacao.documento} (${notificacao.tipoDocumento})
+
+Acesse a página de usuários para aprovar ou rejeitar a solicitação.`);
+      }
 
     } catch (error) {
-      console.error("Erro ao liberar créditos:", error);
-      alert("❌ Erro ao liberar créditos. Tente novamente.");
+      console.error("Erro ao processar notificação:", error);
+      alert("❌ Erro ao processar notificação. Tente novamente.");
     } finally {
       setLiberando(null);
     }
@@ -138,6 +165,8 @@ Novos créditos: ${novosCreditos.toLocaleString()}`);
         return "bg-green-100 text-green-800 border-green-200";
       case "PENDENTE":
         return "bg-blue-100 text-blue-800 border-blue-200";
+      case "VISUALIZADA":
+        return "bg-purple-100 text-purple-800 border-purple-200";
       case "CANCELADO":
         return "bg-red-100 text-red-800 border-red-200";
       default:
@@ -169,8 +198,8 @@ Novos créditos: ${novosCreditos.toLocaleString()}`);
             </svg>
           </button>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Notificações de Pagamento</h1>
-            <p className="text-gray-600">Gerencie os pedidos de recarga dos usuários</p>
+            <h1 className="text-2xl font-bold text-gray-900">Central de Notificações</h1>
+            <p className="text-gray-600">Gerencie pagamentos e solicitações de conta</p>
           </div>
         </div>
         
@@ -195,7 +224,7 @@ Novos créditos: ${novosCreditos.toLocaleString()}`);
             </svg>
           </div>
           <h3 className="text-lg font-semibold text-gray-900 mb-2">Nenhuma notificação</h3>
-          <p className="text-gray-600">Não há pedidos de recarga pendentes no momento.</p>
+          <p className="text-gray-600">Não há pagamentos ou solicitações de conta pendentes no momento.</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -204,37 +233,69 @@ Novos créditos: ${novosCreditos.toLocaleString()}`);
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                      <svg className="w-5 h-5 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                      </svg>
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                      notificacao.tipo === "PAGAMENTO_CONFIRMADO" ? "bg-green-100" : "bg-blue-100"
+                    }`}>
+                      {notificacao.tipo === "PAGAMENTO_CONFIRMADO" ? (
+                        <svg className="w-5 h-5 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                        </svg>
+                      ) : (
+                        <svg className="w-5 h-5 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                      )}
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900">{notificacao.plano}</h3>
-                      <p className="text-sm text-gray-600">Usuário: {notificacao.usuario}</p>
+                      <h3 className="text-lg font-semibold text-gray-900">
+                        {notificacao.tipo === "PAGAMENTO_CONFIRMADO" ? notificacao.plano : "Nova Solicitação de Conta"}
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        {notificacao.tipo === "PAGAMENTO_CONFIRMADO" 
+                          ? `Usuário: ${notificacao.usuario}` 
+                          : `${notificacao.nome} (${notificacao.email})`
+                        }
+                      </p>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <div className="bg-gray-50 rounded-lg p-3">
-                      <div className="text-sm text-gray-600">Valor</div>
-                      <div className="text-lg font-bold text-green-900">R$ {notificacao.valor.toFixed(2)}</div>
+                  {notificacao.tipo === "PAGAMENTO_CONFIRMADO" ? (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                      <div className="bg-gray-50 rounded-lg p-3">
+                        <div className="text-sm text-gray-600">Valor</div>
+                        <div className="text-lg font-bold text-green-900">R$ {(notificacao.valor || 0).toFixed(2)}</div>
+                      </div>
+                      <div className="bg-gray-50 rounded-lg p-3">
+                        <div className="text-sm text-gray-600">Consultas</div>
+                        <div className="text-lg font-bold text-blue-900">{(notificacao.consultas || 0).toLocaleString()}</div>
+                      </div>
+                      <div className="bg-gray-50 rounded-lg p-3">
+                        <div className="text-sm text-gray-600">Data</div>
+                        <div className="text-sm font-medium text-gray-900">{formatarData(notificacao.data)}</div>
+                      </div>
                     </div>
-                    <div className="bg-gray-50 rounded-lg p-3">
-                      <div className="text-sm text-gray-600">Consultas</div>
-                      <div className="text-lg font-bold text-blue-900">{notificacao.consultas.toLocaleString()}</div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                      <div className="bg-gray-50 rounded-lg p-3">
+                        <div className="text-sm text-gray-600">Nome</div>
+                        <div className="text-lg font-bold text-blue-900">{notificacao.nome}</div>
+                      </div>
+                      <div className="bg-gray-50 rounded-lg p-3">
+                        <div className="text-sm text-gray-600">Documento</div>
+                        <div className="text-lg font-bold text-blue-900">{notificacao.documento} ({notificacao.tipoDocumento})</div>
+                      </div>
+                      <div className="bg-gray-50 rounded-lg p-3">
+                        <div className="text-sm text-gray-600">Data</div>
+                        <div className="text-sm font-medium text-gray-900">{formatarData(notificacao.data)}</div>
+                      </div>
                     </div>
-                    <div className="bg-gray-50 rounded-lg p-3">
-                      <div className="text-sm text-gray-600">Data</div>
-                      <div className="text-sm font-medium text-gray-900">{formatarData(notificacao.data)}</div>
-                    </div>
-                  </div>
+                  )}
 
                   <div className="flex items-center gap-3">
                     <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(notificacao.status)}`}>
                       {notificacao.status}
                     </span>
-                    {notificacao.status === "CONFIRMADO" && (
+                    {notificacao.status === "CONFIRMADO" && notificacao.tipo === "PAGAMENTO_CONFIRMADO" && (
                       <button
                         onClick={() => liberarCreditos(notificacao, index)}
                         disabled={liberando === (notificacao.id || index.toString())}
@@ -254,6 +315,32 @@ Novos créditos: ${novosCreditos.toLocaleString()}`);
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                             Liberar Créditos
+                          </>
+                        )}
+                      </button>
+                    )}
+                    
+                    {notificacao.status === "PENDENTE" && notificacao.tipo === "NOVA_SOLICITACAO_CONTA" && (
+                      <button
+                        onClick={() => liberarCreditos(notificacao, index)}
+                        disabled={liberando === (notificacao.id || index.toString())}
+                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                      >
+                        {liberando === (notificacao.id || index.toString()) ? (
+                          <>
+                            <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Processando...
+                          </>
+                        ) : (
+                          <>
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            Marcar como Visualizada
                           </>
                         )}
                       </button>

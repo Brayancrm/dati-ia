@@ -35,7 +35,10 @@ export default function UserMenu({ onLoginClick, onCreateAccountClick }: UserMen
         const notificacoesSalvas = localStorage.getItem('notificacoes_pagamentos');
         if (notificacoesSalvas) {
           const notificacoes = JSON.parse(notificacoesSalvas);
-          const pendentes = notificacoes.filter((n: any) => n.status === "CONFIRMADO").length;
+          const pendentes = notificacoes.filter((n: any) => 
+            n.status === "CONFIRMADO" || 
+            (n.tipo === "NOVA_SOLICITACAO_CONTA" && n.status === "PENDENTE")
+          ).length;
           setNotificacoesPendentes(pendentes);
         }
       } catch (error) {
