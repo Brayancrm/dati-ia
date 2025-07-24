@@ -2,7 +2,7 @@
 import { useEffect, useState, useRef } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { db } from "@/firebaseConfig";
-import { collection, getDocs, addDoc, deleteDoc, doc, query, where, orderBy, startAfter, writeBatch, limit, onSnapshot } from "firebase/firestore";
+import { collection, getDocs, addDoc, deleteDoc, doc, query, where, orderBy, startAfter, writeBatch, limit, onSnapshot, setDoc, updateDoc } from "firebase/firestore";
 import * as XLSX from "xlsx";
 import { useRouter } from "next/navigation";
 
@@ -564,7 +564,23 @@ export default function BasesPage() {
         const tiposParaImportar = tiposColunasEditaveis;
         const setoresParaImportar = setoresColunas;
         const mapeamentoProspeccaoParaImportar = mapeamentoProspeccao;
-        // Criar registro da base
+        // Passo 1: Criar primeiro a importação para obter o ID
+        const importacaoRef = await addDoc(collection(db, "importacoes"), {
+          fileName: file.name,
+          filePath: `importacoes/temp_${file.name}`, // Path temporário
+          status: 'pendente',
+          createdAt: new Date(),
+          origem: origemBase,
+          user: user.email,
+          tiposColunas: tiposParaImportar,
+          setoresColunas: setoresParaImportar,
+          mapeamentoProspeccao: mapeamentoProspeccaoParaImportar,
+          baseId: '', // Será atualizado depois
+          total: json.length,
+          progresso: 0
+        });
+        
+        // Passo 2: Criar a base usando o ID da importação
         const baseRef = await addDoc(collection(db, "bases"), {
           nome: file.name,
           data: new Date(),
@@ -574,23 +590,13 @@ export default function BasesPage() {
           ordemColunas: colunas,
           setoresColunas: setoresParaImportar,
           mapeamentoProspeccao: mapeamentoProspeccaoParaImportar,
-          importId: importacaoRef.id, // Referência para rastrear progresso
+          importId: importacaoRef.id, // Agora o ID existe
         });
         
-        // Criar registro na coleção importacoes para processamento em background
-        const importacaoRef = await addDoc(collection(db, "importacoes"), {
-          fileName: file.name,
-          filePath: `importacoes/${baseRef.id}_${file.name}`,
-          status: 'pendente',
-          createdAt: new Date(),
-          origem: origemBase,
-          user: user.email,
-          tiposColunas: tiposParaImportar,
-          setoresColunas: setoresParaImportar,
-          mapeamentoProspeccao: mapeamentoProspeccaoParaImportar,
-          baseId: baseRef.id, // Referência para a base
-          total: json.length,
-          progresso: 0
+        // Passo 3: Atualizar a importação com o ID da base e path correto
+        await updateDoc(importacaoRef, {
+          baseId: baseRef.id,
+          filePath: `importacoes/${baseRef.id}_${file.name}`
         });
         // Criar uma nova prévia minimizada para cada arquivo
         novasPrevias.push({
