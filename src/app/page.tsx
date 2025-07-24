@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { auth } from "@/firebaseConfig";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
+import Link from "next/link";
 
 export default function HomePage() {
   const [email, setEmail] = useState("");
@@ -463,6 +464,50 @@ export default function HomePage() {
           </div>
         </div>
       )}
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-12">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+              <h3 className="text-lg font-semibold mb-4">DatiIA</h3>
+              <p className="text-gray-400">
+                Plataforma líder em busca e consulta de dados pessoais com segurança e compliance LGPD.
+              </p>
+            </div>
+            <div>
+              <h4 className="text-md font-semibold mb-4">Serviços</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li>Busca de Pessoas</li>
+                <li>Consulta de Dados</li>
+                <li>Prospecção Comercial</li>
+                <li>Relatórios Personalizados</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-md font-semibold mb-4">Suporte</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li>Central de Ajuda</li>
+                <li>Contato Técnico</li>
+                <li>FAQ</li>
+                <li>Status do Sistema</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-md font-semibold mb-4">Legal</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><Link href="/termos" className="hover:text-white transition-colors">Termos de Uso</Link></li>
+                <li><Link href="/privacidade" className="hover:text-white transition-colors">Política de Privacidade</Link></li>
+                <li>LGPD Compliance</li>
+                <li>Segurança de Dados</li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; 2024 DatiIA. Todos os direitos reservados.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
